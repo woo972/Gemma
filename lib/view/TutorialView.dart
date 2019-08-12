@@ -2,12 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gemma/view/MainView.dart';
 
 class TutorialView extends StatelessWidget{
-  void _routeMainPage(){
-      //  Navigator.pushReplacement(
-      //    context, 
-      //    MaterialPageRoute(builder: (context) => MainView()));
-  }
-
   static const _tutorialPages = <Text>[
     Text('test'),
     Text('2nd'),
@@ -30,8 +24,9 @@ class TutorialView extends StatelessWidget{
             ),
             RaisedButton(
               child:Text('건너뛰기'),
-              onPressed: _routeMainPage
-              
+              onPressed: (){
+                Navigator.pushReplacementNamed(context, '/');
+              }
             )
           ],)
         )
