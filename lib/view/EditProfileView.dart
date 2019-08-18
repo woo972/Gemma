@@ -14,15 +14,16 @@ class EditProfileState extends State<EditProfileView> {
       padding: EdgeInsets.all(16.0),
       child: Column(
         children: <Widget>[
-          TextField(
-
-          ),
-          TextField(
-
-          ),
+          
           Checkbox(
             value: true, 
             onChanged: (bool value) {value = true;},
+          ),
+          RaisedButton(
+            child: Text('다음'),
+            onPressed: (){
+              Navigator.pushNamed(context, '/diagnosis/sheet');
+            },
           )
         ],
       ),

@@ -13,6 +13,10 @@ class GemmaApp extends StatelessWidget {
       title: 'Gemma',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        textTheme: Theme.of(context).textTheme.apply(
+          bodyColor: Colors.grey[900],
+          displayColor: Colors.white
+        )
       ),      
       routes: routes,
     );
