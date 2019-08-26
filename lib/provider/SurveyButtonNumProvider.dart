@@ -5,10 +5,11 @@ class SurveyButtonNumProvider with ChangeNotifier{
 
   SurveyButtonNumProvider(this._buttonNum);
 
-  getSelectedButtonNum() => this._buttonNum;
+  get selectedButtonNum => this._buttonNum;
   
-  setSelectedButtonNum(var buttonNum){
-    _buttonNum=buttonNum;
+  set selectedButtonNum(var buttonNum){
+    this._buttonNum=buttonNum;
+    print('notify : $_buttonNum');
     notifyListeners();
   } 
 }

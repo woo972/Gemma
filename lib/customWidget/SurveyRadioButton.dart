@@ -3,25 +3,28 @@ import 'package:gemma/model/SurveyRadioButtonModel.dart';
 import 'package:gemma/provider/SurveyButtonNumProvider.dart';
 import 'package:provider/provider.dart';
 
-class SurveyRadioButton extends StatelessWidget{
+class SurveyRadioButton extends StatelessWidget {
   final SurveyRadioButtonModel _item;
   SurveyRadioButton(this._item);
 
   @override
-  Widget build(BuildContext context) {    
+  Widget build(BuildContext context) {
     final _buttonNum = Provider.of<SurveyButtonNumProvider>(context);
-    var _surveyResponseCodeScore = Provider.of<dynamic>(context);
     
-
-    return RaisedButton(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-      color: _buttonNum == _item.getButtonNum() ?
-             Colors.greenAccent[400] : Colors.grey,
-      child: _item.getText(),      
-      onPressed: (){        
-        _buttonNum.setSelectedButtonNum(_item.getButtonNum());
-      },
-    );
+    return SizedBox(
+        width: double.infinity,
+        height: 40,
+        child: RaisedButton(
+          shape: StadiumBorder(),
+          padding: EdgeInsets.symmetric(vertical: 10),
+          color: _buttonNum.selectedButtonNum == _item.number
+              ? Colors.greenAccent[400]
+              : Colors.grey,
+          child:
+              Text(_item.text, style: TextStyle(fontWeight: FontWeight.bold)),
+          onPressed: () {
+            _buttonNum.selectedButtonNum = _item.number;
+          },
+        ));
   }
-  
 }

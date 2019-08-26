@@ -7,15 +7,14 @@ class SurveyResultProvider with ChangeNotifier{
     this._responseCodeArr = [0,0,0,0];
   }
 
-  getResponseArr() => _responseCodeArr;
-  getResponseScore(var code) => _responseCodeArr[code];
+  get responseArr => _responseCodeArr;
 
-  setResponseScoreIncrement(var code){
+  responseScoreIncrement(var code){
     _responseCodeArr[code]++;
-    notifyListeners();
   } 
-  setResponseScoreDecrement(var code){
+  responseScoreDecrement(var code){
     _responseCodeArr[code]--;
-    notifyListeners();
   } 
+  
+  getResponseScore(var code) => _responseCodeArr[code];
 }

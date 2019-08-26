@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gemma/customWidget/DescCard.dart';
+import 'package:gemma/customWidget/GemmaAppBar.dart';
+import 'package:gemma/customWidget/GemmaDrawer.dart';
 import 'package:gemma/route/RouteConfig.dart';
 
 class MainView extends StatelessWidget {
@@ -6,54 +9,8 @@ class MainView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.blue,
-        drawer: Drawer(
-          child: ListView(
-            children: <Widget>[
-              Text(
-                '달려라 한의',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              Divider(),
-              ListTile(
-                title: Text('체질정보관리'),
-                trailing: Icon(Icons.arrow_forward_ios),
-                onTap: () {},
-              ),
-              Divider(),
-              ListTile(
-                title: Text('공지사항'),
-                trailing: Icon(Icons.arrow_forward_ios),
-                onTap: () {},
-              ),
-              Divider(),
-              ListTile(
-                title: Text('알림 설정'),
-                trailing: Icon(Icons.arrow_forward_ios),
-                onTap: () {},
-              ),
-              Divider(),
-              ListTile(
-                title: Text('건강정보 수신동의'),
-                trailing: Icon(Icons.arrow_forward_ios),
-                onTap: () {},
-              ),
-              Divider(),
-              ListTile(
-                title: Text('앱 버전'),
-                trailing: Text('v0.0.1'),
-              ),
-              Divider(),
-            ],
-          ),
-        ),
-        appBar: AppBar(
-          title: Text('달려라 한의'),
-          leading: Builder(
-              builder: (context) => IconButton(
-                    icon: Icon(Icons.menu),
-                    onPressed: () => Scaffold.of(context).openDrawer(),
-                  )),
-        ),
+        drawer: GemmaDrawer(),
+        appBar: GemmaAppBar.getAppBar(),
         body: Padding(
           padding: EdgeInsets.symmetric(vertical: 30, horizontal: 16),
           child: Column(
@@ -175,42 +132,3 @@ class MainView extends StatelessWidget {
   }
 }
 
-class DescCard extends StatelessWidget {
-  Row _title;
-  Text _contents;
-  DescCard(title, contents) {
-    this._title = title;
-    this._contents = contents;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 0),
-            child: _title,
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 0),
-            child: _contents,
-          ),
-          Container(
-              padding: EdgeInsets.only(right: 16),
-              alignment: Alignment.centerRight,
-              child: ButtonTheme(
-                  minWidth: 90,
-                  height: 25,
-                  child: RaisedButton(
-                    child: Text('더 보기'),
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)),
-                    onPressed: () {},
-                  )))
-        ],
-      ),
-    );
-  }
-}
