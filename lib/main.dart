@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:gemma/route/RouteConfig.dart';
+import 'package:gemma/util/DbProvider.dart';
+import 'package:gemma/util/RouteConfig.dart';
+import 'package:gemma/view/MainView.dart';
+import 'package:gemma/view/TutorialView.dart';
 
-void main() => runApp(GemmaApp());
-
+void main() {
+  Widget _defaultHome = TutorialView();
+  DbProvider db = DbProvider.dbProviderInstance;
+  db.isProfileExsist().then((count){
+    print(count);
+    if(count > 0){
+      _defaultHome = MainView();
+    }
+  });
+  runApp(GemmaApp(_defaultHome));
+} 
+ 
 class GemmaApp extends StatelessWidget {
-
-  // check user state and load settings
+  Widget _home;
+  GemmaApp(this._home);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +30,8 @@ class GemmaApp extends StatelessWidget {
           bodyColor: Colors.grey[900],
           displayColor: Colors.white
         )
-      ),      
+      ),
+      home: _home,
       routes: routes,
     );
   }

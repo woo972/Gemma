@@ -12,6 +12,14 @@ class GemmaDrawer extends StatelessWidget{
               ),
               Divider(),
               ListTile(
+                title: Text('프로필관리'),
+                trailing: Icon(Icons.person),
+                onTap: () {
+                  Navigator.pushNamed(context,'/edit-profile');
+                },
+              ),
+              Divider(),
+              ListTile(
                 title: Text('체질정보관리'),
                 trailing: Icon(Icons.arrow_forward_ios),
                 onTap: () {},

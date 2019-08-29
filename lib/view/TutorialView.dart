@@ -23,9 +23,11 @@ class TutorialView extends StatelessWidget{
               )
             ),
             RaisedButton(
-              child:Text('건너뛰기'),
+              child: DefaultTabController.of(context)
+                                         .index == _tutorialPages.length -1 ?
+                                          Text('다음'): Text('건너뛰기'),
               onPressed: (){
-                Navigator.pushReplacementNamed(context, '/');
+                Navigator.pushReplacementNamed(context, '/edit-profile');
               }
             )
           ],)

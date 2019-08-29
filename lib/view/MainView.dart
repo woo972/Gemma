@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:gemma/customWidget/DescCard.dart';
 import 'package:gemma/customWidget/GemmaAppBar.dart';
 import 'package:gemma/customWidget/GemmaDrawer.dart';
-import 'package:gemma/route/RouteConfig.dart';
+import 'package:gemma/util/RouteConfig.dart';
 
 class MainView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         backgroundColor: Colors.blue,
         drawer: GemmaDrawer(),

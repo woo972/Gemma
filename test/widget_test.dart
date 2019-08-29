@@ -9,11 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:gemma/main.dart';
+import 'package:gemma/view/MainView.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(GemmaApp());
+    await tester.pumpWidget(GemmaApp(MainView()));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

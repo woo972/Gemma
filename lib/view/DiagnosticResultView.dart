@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gemma/route/RouteConfig.dart';
+import 'package:gemma/util/RouteConfig.dart';
 
 class DiagnosticResultView extends StatelessWidget{
   @override

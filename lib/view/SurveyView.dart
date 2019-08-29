@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gemma/customWidget/GemmaAppBar.dart';
 import 'package:gemma/customWidget/GemmaDrawer.dart';
-import 'package:gemma/gemmaContents/diagnosticQuestions.dart';
+import 'package:gemma/gemmaContents/DiagnosticQuestions.dart';
 
 class SurveyView extends StatelessWidget {
   @override
