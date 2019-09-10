@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:gemma/provider/ProfileProvider.dart';
 import 'package:gemma/util/DbProvider.dart';
 import 'package:gemma/util/RouteConfig.dart';
 import 'package:gemma/view/MainView.dart';
 import 'package:gemma/view/TutorialView.dart';
+import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
   Widget _defaultHome = TutorialView();
   DbProvider db = DbProvider.dbProviderInstance;
-  db.isProfileExsist().then((count){
-    print(count);
-    if(count > 0){
-      _defaultHome = MainView();
-    }
-  });
+  var count = await db.isProfileExsist();
+  if(count > 0){
+    _defaultHome = MainView();
+  }
   runApp(GemmaApp(_defaultHome));
 } 
  
@@ -22,7 +22,11 @@ class GemmaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MultiProvider(
+      providers:[
+        ChangeNotifierProvider(builder:(_)=>ProfileProvider()),
+      ],
+      child:MaterialApp(
       title: 'Gemma',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -33,6 +37,6 @@ class GemmaApp extends StatelessWidget {
       ),
       home: _home,
       routes: routes,
-    );
+    ));
   }
 }

@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:gemma/customWidget/DescCard.dart';
 import 'package:gemma/customWidget/GemmaAppBar.dart';
 import 'package:gemma/customWidget/GemmaDrawer.dart';
+import 'package:gemma/util/DbProvider.dart';
 import 'package:gemma/util/RouteConfig.dart';
 
 class MainView extends StatelessWidget {
+  DbProvider db = DbProvider.dbProviderInstance;
+
   @override
   Widget build(BuildContext context) {
-
+    // future builder 사용해서 프로필 긁어올것
     return Scaffold(
         backgroundColor: Colors.blue,
         drawer: GemmaDrawer(),
@@ -17,7 +20,7 @@ class MainView extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Card(
-                  child: FlatButton(
+                child: FlatButton(
                 child: ListTile(
                   leading: Icon(Icons.person_outline),
                   title: Text('내 체질 진단하기'),
@@ -132,4 +135,3 @@ class MainView extends StatelessWidget {
         ));
   }
 }
-

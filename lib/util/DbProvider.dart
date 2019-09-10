@@ -20,16 +20,16 @@ class DbProvider {
   _initDb() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, "com.k.w.gemma.db");
-    return await openDatabase(path, version: 1, onOpen: (db) {},
+
+    //debug
+    // await deleteDatabase(path);
+
+    return await openDatabase(path, version: 2, onOpen: (db) {},
         onCreate: (Database db, int version) async {
       await db.execute("CREATE TABLE GEMMA_PROFILE ("
-          "id INTEGER PRIMARY KEY,"
+          "id INTEGER PRIMARY KEY AUTOINCREMENT,"
           "name TEXT NOT NULL,"
-          "sex TEXT,"
-          "birth_year TEXT,"
-          "birth_month TEXT,"
-          "birth_day TEXT,"
-          "solar_flag INTEGER,"
+          "sex INTEGER,"
           "age INTEGER,"
           "default_flag INTEGER"
           ")");
@@ -38,13 +38,10 @@ class DbProvider {
 
   Future<int> saveProfile(ProfileModel p) async {
     final db = await database;
-    return await db.rawInsert("insert into gemma_profile (id, name, sex, "
-        "birth_year, birth_month, birth_day,"
-        "solar_flag, age, defualt_flag)"
-        "values ((select max(id)+1 from gemma_profile),"
-        "'${p.name}','${p.sex}',"
-        "'${p.birth_year}','${p.birth_month}','${p.birth_day}')"
-        "'${p.solar_flag}','${p.age}','${p.default_flag}'");
+    return await db.rawInsert("insert into gemma_profile"
+                              "(name, sex, age, default_flag)"
+        "values (?,?,?,?)",
+        [p.name, p.sex, p.age, p.defaultFlag]);
   }
 
   Future<int> isProfileExsist() async {
@@ -53,11 +50,23 @@ class DbProvider {
         await db.rawQuery("select count(*) from gemma_profile"));
   }
 
+  Future<ProfileModel> getDefaultProfile() async {
+    final db = await database;
+    var rslt = await db.rawQuery("select id, name"
+        "from gemma_profile"
+        "where default_flag = 1");
+    return ProfileModel(
+      id:rslt.first['id'],
+      name:rslt.first['name'],
+      defaultFlag: rslt.first['default_flag']
+    );
+  }
+
   Future<List<ProfileModel>> getProfileList() async {
     final db = await database;
     var rslt = await db.rawQuery("select id, name"
         "from gemma_profile"
-        "order by id");
+        "order by default_flag desc, id asc");
     return List.generate(rslt.length, (idx) {
       return ProfileModel(
         id: rslt[idx]["id"],
@@ -74,12 +83,12 @@ class DbProvider {
       id: rslt.first["id"],
       name: rslt.first["name"],
       sex: rslt.first["sex"],
-      birth_year: rslt.first["birth_year"],
-      birth_month: rslt.first["birth_month"],
-      birth_day: rslt.first["birth_day"],
-      solar_flag: rslt.first["solar_flag"],
+      // birth_year: rslt.first["birth_year"],
+      // birth_month: rslt.first["birth_month"],
+      // birth_day: rslt.first["birth_day"],
+      // solar_flag: rslt.first["solar_flag"],
       age: rslt.first["age"],
-      default_flag: rslt.first["default_flag"],
+      defaultFlag: rslt.first["default_flag"],
     );
   }
 
@@ -87,18 +96,18 @@ class DbProvider {
     final db = await database;
     await db.rawUpdate(
         "update gemma_profile set name=?, sex=?,"
-        "birth_year=?, birth_month=?,birth_day=?,"
-        "solar_flag=?, age=?, default_flag=?,"
+        // "birth_year=?, birth_month=?,birth_day=?,solar_flag=?,"
+        "age=?, default_flag=?,"
         "where id=?",
         [
           p.name,
           p.sex,
-          p.birth_year,
-          p.birth_month,
-          p.birth_day,
-          p.solar_flag,
+          // p.birth_year,
+          // p.birth_month,
+          // p.birth_day,
+          // p.solar_flag,
           p.age,
-          p.default_flag,
+          p.defaultFlag,
           p.id
         ]);
   }
