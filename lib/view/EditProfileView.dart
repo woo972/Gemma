@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gemma/customWidget/GemmaAppBar.dart';
-import 'package:gemma/customWidget/GemmaDrawer.dart';
 import 'package:gemma/model/ProfileModel.dart';
-import 'package:gemma/provider/ProfileProvider.dart';
 import 'package:gemma/util/DbProvider.dart';
-import 'package:gemma/util/RouteConfig.dart';
 import 'package:provider/provider.dart';
 
 // https://github.com/DK15/quiz-app-flutter/blob/master/lib/main.dart
@@ -42,7 +38,7 @@ class EditProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ProfileProvider _profileProvider = Provider.of<ProfileProvider>(context);
+    ProfileModel _profileProvider = Provider.of<ProfileModel>(context);
     return Scaffold(
         body: Container(
       color: Colors.purple,
@@ -94,7 +90,6 @@ class EditProfileView extends StatelessWidget {
         RaisedButton(
             child: Text('저장'),
             onPressed: () {
-              print('rslt:$_formKey.currentState.validate()');
               if (_formKey.currentState.validate()) {
                 _formKey.currentState.save();
                 ProfileModel p = ProfileModel(
@@ -105,6 +100,7 @@ class EditProfileView extends StatelessWidget {
                 db.saveProfile(p).then((v) {
                   print(v);
                 });
+                // main으로 데이터 넘길것
                 Navigator.pushReplacementNamed(context, '/main');
               }
             })

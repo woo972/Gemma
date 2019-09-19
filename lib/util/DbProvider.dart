@@ -36,10 +36,14 @@ class DbProvider {
     });
   }
 
+  /*
+   * [Profile]
+   */
   Future<int> saveProfile(ProfileModel p) async {
     final db = await database;
-    return await db.rawInsert("insert into gemma_profile"
-                              "(name, sex, age, default_flag)"
+    return await db.rawInsert(
+        "insert into gemma_profile"
+        "(name, sex, age, default_flag)"
         "values (?,?,?,?)",
         [p.name, p.sex, p.age, p.defaultFlag]);
   }
@@ -56,10 +60,9 @@ class DbProvider {
         "from gemma_profile"
         "where default_flag = 1");
     return ProfileModel(
-      id:rslt.first['id'],
-      name:rslt.first['name'],
-      defaultFlag: rslt.first['default_flag']
-    );
+        id: rslt.first['id'],
+        name: rslt.first['name'],
+        defaultFlag: rslt.first['default_flag']);
   }
 
   Future<List<ProfileModel>> getProfileList() async {
@@ -83,10 +86,6 @@ class DbProvider {
       id: rslt.first["id"],
       name: rslt.first["name"],
       sex: rslt.first["sex"],
-      // birth_year: rslt.first["birth_year"],
-      // birth_month: rslt.first["birth_month"],
-      // birth_day: rslt.first["birth_day"],
-      // solar_flag: rslt.first["solar_flag"],
       age: rslt.first["age"],
       defaultFlag: rslt.first["default_flag"],
     );
@@ -96,16 +95,11 @@ class DbProvider {
     final db = await database;
     await db.rawUpdate(
         "update gemma_profile set name=?, sex=?,"
-        // "birth_year=?, birth_month=?,birth_day=?,solar_flag=?,"
         "age=?, default_flag=?,"
         "where id=?",
         [
           p.name,
           p.sex,
-          // p.birth_year,
-          // p.birth_month,
-          // p.birth_day,
-          // p.solar_flag,
           p.age,
           p.defaultFlag,
           p.id
@@ -115,5 +109,17 @@ class DbProvider {
   Future<void> removeProfile(int id) async {
     final db = await database;
     await db.rawDelete("delete from gemma_profile where id = ?", [id]);
+  }
+
+  /*
+   * [Diagnosis]
+   */
+  Future<int> saveDiagnosticResult(ProfileModel p) async {
+    final db = await database;
+    return await db.rawUpdate(
+        "update gemma_profile"
+        "set typeCode = ?"
+        "where id = ?",
+        [p.typeCode, p.id]);
   }
 }

@@ -1,48 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:gemma/provider/SurveyButtonNumProvider.dart';
+import 'package:gemma/model/SurveyCardModel.dart';
+import 'package:gemma/model/SurveyRadioButtonModel.dart';
 import 'package:provider/provider.dart';
 
 class SurveyCard extends StatelessWidget {
-  final _surveyCardNum;
-  final _question;
-  final _button1;
-  final _button2;
-  final _button3;
-  final _button4;
+  final SurveyCardModel _surveyCardModel;
 
-  SurveyCard(this._surveyCardNum, this._question, this._button1, this._button2,
-      this._button3, this._button4);
+  SurveyCard(this._surveyCardModel);
+
+  get surveyCardModel => _surveyCardModel;
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Container(
+        child: Container(
       padding: EdgeInsets.all(16),
-      child: Column(
-        children: <Widget>[
-          Text(
-            _question, 
-            textAlign: TextAlign.left,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+      child: Column(children: <Widget>[
+        Text(
+          _surveyCardModel.question,
+          textAlign: TextAlign.left,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
-          ChangeNotifierProvider<SurveyButtonNumProvider>(
-              builder: (context) => SurveyButtonNumProvider(0),
-              child: Column(
-                children: <Widget>[
-                  _button1,
-                  SizedBox(height: 10,),
-                  _button2,
-                  SizedBox(height: 10,),
-                  _button3, 
-                  SizedBox(height: 10,),
-                  _button4
-                ],
-              ))
-        ],
-      ),
+        ),
+        ChangeNotifierProvider<SurveyCardModel>(
+            builder: (context) => SurveyCardModel.origin(_surveyCardModel),
+            child: Column(
+              children: <Widget>[
+                ..._surveyCardModel.buttonList.map((button) => Padding(
+                      padding: EdgeInsets.symmetric(vertical: 5),
+                      child: button,
+                    ))
+              ],
+            ))
+      ]),
     ));
   }
 }

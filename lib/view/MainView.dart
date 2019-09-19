@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:gemma/customWidget/DescCard.dart';
 import 'package:gemma/customWidget/GemmaAppBar.dart';
 import 'package:gemma/customWidget/GemmaDrawer.dart';
+import 'package:gemma/model/ProfileModel.dart';
 import 'package:gemma/util/DbProvider.dart';
-import 'package:gemma/util/RouteConfig.dart';
 
 class MainView extends StatelessWidget {
+  ProfileModel _defaultProfile;
+  MainView(this._defaultProfile);
+
   DbProvider db = DbProvider.dbProviderInstance;
 
   @override
@@ -19,16 +22,29 @@ class MainView extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 30, horizontal: 16),
           child: Column(
             children: <Widget>[
+              Text('${_defaultProfile.name}님 환영합니다'),
               Card(
                 child: FlatButton(
                 child: ListTile(
                   leading: Icon(Icons.person_outline),
-                  title: Text('내 체질 진단하기'),
+                  title: Text('체질 진단하기'),
                   trailing: Icon(Icons.arrow_forward_ios),
                   contentPadding: EdgeInsets.all(0),
                 ),
                 onPressed: () {
                   Navigator.pushNamed(context, '/diagnosis/survey');
+                },
+              )),
+              Card(
+                child: FlatButton(
+                child: ListTile(
+                  leading: Icon(Icons.person_outline),
+                  title: Text('진단 결과 보기'),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                  contentPadding: EdgeInsets.all(0),
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/diagnosis/result');
                 },
               )),
               Container(
