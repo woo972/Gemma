@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gemma/util/Settings.dart';
 
 class DescCard extends StatelessWidget {
   Row _title;
@@ -11,6 +12,7 @@ class DescCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: gemmaElevation,
       child: Column(
         children: <Widget>[
           Padding(

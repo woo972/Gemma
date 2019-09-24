@@ -10,7 +10,8 @@ class TutorialView extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
+    return Scaffold(
+      body:DefaultTabController(
       length: _tutorialPages.length,
       child: Builder(
         builder: (BuildContext context) => Padding(
@@ -33,7 +34,7 @@ class TutorialView extends StatelessWidget{
           ],)
         )
       )
-    );
+    ));
   }
 
 

@@ -38,5 +38,11 @@ class ProfileModel with ChangeNotifier{
   }  
   set typeCode(typeCode){
     this._typeCode = typeCode;
+    notifyListeners();
   }  
+  
+  @override
+  String toString() {
+    return '[id]$_id [name]$_name [sex]$_sex [age]$_age [defaultFlag]$_defaultFlag [typeCode]$_typeCode';
+  }
 }

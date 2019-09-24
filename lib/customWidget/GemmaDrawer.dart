@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gemma/model/ProfileModel.dart';
+import 'package:gemma/util/DbProvider.dart';
 
 class GemmaDrawer extends StatelessWidget{
   @override
@@ -15,7 +17,29 @@ class GemmaDrawer extends StatelessWidget{
                 title: Text('프로필관리'),
                 trailing: Icon(Icons.person),
                 onTap: () {
-                  Navigator.pushNamed(context,'/edit-profile');
+                  DbProvider _db = DbProvider.dbProviderInstance;
+                  List<ProfileModel> profileList;
+                  _db.getProfileList().then((rslt){
+                    profileList=rslt;
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context){
+                        return AlertDialog(
+                          content: Container(
+                            child: ListView.builder(
+                              itemCount: profileList.length,
+                              itemBuilder: (BuildContext context, int idx){
+                                return ListTile(
+                                  title: profileList[idx].name
+                                );
+                              }
+                            ),
+                          ),
+                        );
+                      }
+                    );
+                  });
+                  // Navigator.pushNamed(context,'/edit-profile');
                 },
               ),
               Divider(),

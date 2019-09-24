@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:gemma/gemmaContents/DiagnosticResults.dart';
 import 'package:gemma/model/DiagnosticResultModel.dart';
+import 'package:gemma/model/ProfileModel.dart';
+import 'package:provider/provider.dart';
 
 class DiagnosticResultView extends StatelessWidget{
-  int _typeCode;
-  DiagnosticResultView(this._typeCode);
+  ProfileModel _defaultProfile;
 
   @override
   Widget build(BuildContext context) {
+    _defaultProfile = Provider.of<ProfileModel>(context);
+
     DiagnosticResultModel _diagnosticResultModel = 
-      DiagnosticResults.getDiagnosticResults(_typeCode);
+      DiagnosticResults.getDiagnosticResults(_defaultProfile.typeCode);
 
     return Scaffold(
       appBar: AppBar(
@@ -17,7 +20,9 @@ class DiagnosticResultView extends StatelessWidget{
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.close),
-            onPressed: () => Navigator.popUntil(context, ModalRoute.withName('/main')),
+            // popUntil 사용시 bad state 에러...
+            // onPressed: () => Navigator.popUntil(context, ModalRoute.withName('/main'))
+            onPressed: () => Navigator.pushNamed(context, '/main')
           )
         ],
         leading: Container(),

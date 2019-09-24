@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gemma/model/SurveyCardModel.dart';
-import 'package:gemma/model/SurveyRadioButtonModel.dart';
+import 'package:gemma/util/Settings.dart';
 import 'package:provider/provider.dart';
 
 class SurveyCard extends StatelessWidget {
@@ -12,9 +12,10 @@ class SurveyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Card(      
+      elevation: gemmaElevation,
         child: Container(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),      
       child: Column(children: <Widget>[
         Text(
           _surveyCardModel.question,

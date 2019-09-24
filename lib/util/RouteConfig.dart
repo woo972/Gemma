@@ -4,12 +4,21 @@ import 'package:gemma/view/SurveyView.dart';
 import 'package:gemma/view/TutorialView.dart';
 import 'package:gemma/view/MainView.dart';
 import 'package:gemma/view/EditProfileView.dart';
+import 'package:gemma/view/UnknownView.dart';
 
-final routes = {
 
-  '/main': (BuildContext context) => MainView(null),
-  '/tutorial': (BuildContext context) => TutorialView(),
-  '/diagnosis/survey': (BuildContext context) => SurveyView(),
-  '/diagnosis/result': (BuildContext context) => DiagnosticResultView(0),
-  '/edit-profile': (BuildContext context) => EditProfileView(),
-}; 
+Route<dynamic> generateRoute(RouteSettings settings){
+  switch (settings.name){
+    case '/main':
+      return MaterialPageRoute(builder: (BuildContext context) => MainView()); 
+    case'/tutorial': 
+      return MaterialPageRoute(builder: (BuildContext context) => TutorialView()); 
+    case'/diagnosis/survey': 
+      return MaterialPageRoute(builder: (BuildContext context) => SurveyView()); 
+    case'/diagnosis/result': 
+      return MaterialPageRoute(builder: (BuildContext context) => DiagnosticResultView()); 
+    case'/edit-profile': 
+      return MaterialPageRoute(builder: (BuildContext context) => EditProfileView()); 
+    default: UnknownView(); break;
+  }
+}

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gemma/model/ProfileModel.dart';
 import 'package:gemma/util/DbProvider.dart';
+import 'package:gemma/util/Settings.dart';
 import 'package:provider/provider.dart';
 
 // https://github.com/DK15/quiz-app-flutter/blob/master/lib/main.dart
@@ -41,7 +42,6 @@ class EditProfileView extends StatelessWidget {
     ProfileModel _profileProvider = Provider.of<ProfileModel>(context);
     return Scaffold(
         body: Container(
-      color: Colors.purple,
       padding: EdgeInsets.all(16.0),
       child: Column(children: <Widget>[
         Form(
@@ -87,23 +87,29 @@ class EditProfileView extends StatelessWidget {
             ],
           ),
         ),
-        RaisedButton(
-            child: Text('저장'),
-            onPressed: () {
-              if (_formKey.currentState.validate()) {
-                _formKey.currentState.save();
-                ProfileModel p = ProfileModel(
-                    name: _profileProvider.name,
-                    age: _profileProvider.age,
-                    sex: _profileProvider.sex,
-                    defaultFlag: 0);
-                db.saveProfile(p).then((v) {
-                  print(v);
-                });
-                // main으로 데이터 넘길것
-                Navigator.pushReplacementNamed(context, '/main');
-              }
-            })
+        Align(
+            alignment: Alignment.bottomRight,
+            child: RaisedButton(
+                elevation: gemmaElevation,
+                child: Text('저장'),
+                onPressed: () {
+                  if (_formKey.currentState.validate()) {
+                    _formKey.currentState.save();
+                    ProfileModel p = ProfileModel(
+                        name: _profileProvider.name,
+                        age: _profileProvider.age,
+                        sex: _profileProvider.sex,
+                        defaultFlag: 1);
+                    print('save this profile:${p.toString()}');
+                    db.saveProfile(p).then((v) {
+                      print(v);
+                      db.getDefaultProfile().then((v) => print('get saved profile:${v.toString()}'));
+                    });
+                    // main으로 데이터 넘길것
+                    Navigator.pushReplacementNamed(context, '/main',
+                        arguments: p);
+                  }
+                }))
       ]),
     ));
   }

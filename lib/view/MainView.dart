@@ -3,19 +3,17 @@ import 'package:gemma/customWidget/DescCard.dart';
 import 'package:gemma/customWidget/GemmaAppBar.dart';
 import 'package:gemma/customWidget/GemmaDrawer.dart';
 import 'package:gemma/model/ProfileModel.dart';
-import 'package:gemma/util/DbProvider.dart';
+import 'package:gemma/util/Settings.dart';
+import 'package:provider/provider.dart';
 
 class MainView extends StatelessWidget {
   ProfileModel _defaultProfile;
-  MainView(this._defaultProfile);
-
-  DbProvider db = DbProvider.dbProviderInstance;
+  MainView({ProfileModel defaultProfile}): _defaultProfile = defaultProfile;
 
   @override
   Widget build(BuildContext context) {
-    // future builder 사용해서 프로필 긁어올것
-    return Scaffold(
-        backgroundColor: Colors.blue,
+    _defaultProfile == null ? Provider.of<ProfileModel>(context) : _defaultProfile;
+    return Scaffold(        
         drawer: GemmaDrawer(),
         appBar: GemmaAppBar.getAppBar(),
         body: Padding(
@@ -24,6 +22,7 @@ class MainView extends StatelessWidget {
             children: <Widget>[
               Text('${_defaultProfile.name}님 환영합니다'),
               Card(
+                elevation: gemmaElevation,
                 child: FlatButton(
                 child: ListTile(
                   leading: Icon(Icons.person_outline),
@@ -32,10 +31,12 @@ class MainView extends StatelessWidget {
                   contentPadding: EdgeInsets.all(0),
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/diagnosis/survey');
+                  Navigator.pushNamed(context, '/diagnosis/survey', arguments: _defaultProfile);
                 },
               )),
+              _defaultProfile.typeCode == null ? Container():
               Card(
+                elevation: gemmaElevation,
                 child: FlatButton(
                 child: ListTile(
                   leading: Icon(Icons.person_outline),
@@ -44,7 +45,7 @@ class MainView extends StatelessWidget {
                   contentPadding: EdgeInsets.all(0),
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/diagnosis/result');
+                  Navigator.pushNamed(context, '/diagnosis/result', arguments: _defaultProfile.typeCode);
                 },
               )),
               Container(

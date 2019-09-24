@@ -22,15 +22,16 @@ class DbProvider {
     String path = join(documentsDirectory.path, "com.k.w.gemma.db");
 
     //debug
-    // await deleteDatabase(path);
+    // await deleteDatabase(path);    
 
-    return await openDatabase(path, version: 2, onOpen: (db) {},
+    return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
       await db.execute("CREATE TABLE GEMMA_PROFILE ("
           "id INTEGER PRIMARY KEY AUTOINCREMENT,"
           "name TEXT NOT NULL,"
           "sex INTEGER,"
           "age INTEGER,"
+          "type_code INTEGER,"
           "default_flag INTEGER"
           ")");
     });
@@ -40,6 +41,7 @@ class DbProvider {
    * [Profile]
    */
   Future<int> saveProfile(ProfileModel p) async {
+    print('save this profile(dbprovider):${p.toString()}');
     final db = await database;
     return await db.rawInsert(
         "insert into gemma_profile"
@@ -51,29 +53,33 @@ class DbProvider {
   Future<int> isProfileExsist() async {
     final db = await database;
     return Sqflite.firstIntValue(
-        await db.rawQuery("select count(*) from gemma_profile"));
+        await db.rawQuery("select count(*) from gemma_profile where default_flag = 1"));
   }
 
   Future<ProfileModel> getDefaultProfile() async {
     final db = await database;
-    var rslt = await db.rawQuery("select id, name"
-        "from gemma_profile"
-        "where default_flag = 1");
+    var rslt = await db.rawQuery("select id, name, sex, age, type_code, default_flag"
+        " from gemma_profile"
+        " where default_flag = 1");
     return ProfileModel(
         id: rslt.first['id'],
-        name: rslt.first['name'],
-        defaultFlag: rslt.first['default_flag']);
+        name: rslt.first['name'],        
+        sex: rslt.first['sex'],        
+        age: rslt.first['age'],        
+        defaultFlag: rslt.first['default_flag'],        
+        typeCode: rslt.first['type_code']);
   }
 
   Future<List<ProfileModel>> getProfileList() async {
     final db = await database;
-    var rslt = await db.rawQuery("select id, name"
-        "from gemma_profile"
-        "order by default_flag desc, id asc");
+    var rslt = await db.rawQuery("select id, name, default_flag"
+        " from gemma_profile"
+        " order by default_flag desc, id asc");
     return List.generate(rslt.length, (idx) {
       return ProfileModel(
         id: rslt[idx]["id"],
         name: rslt[idx]["name"],
+        defaultFlag: rslt[idx]["default_flag"]
       );
     });
   }
@@ -88,6 +94,7 @@ class DbProvider {
       sex: rslt.first["sex"],
       age: rslt.first["age"],
       defaultFlag: rslt.first["default_flag"],
+      typeCode: rslt.first["type_code"],
     );
   }
 
@@ -95,31 +102,37 @@ class DbProvider {
     final db = await database;
     await db.rawUpdate(
         "update gemma_profile set name=?, sex=?,"
-        "age=?, default_flag=?,"
+        "age=?, default_flag=?, type_code=?"
         "where id=?",
         [
           p.name,
           p.sex,
           p.age,
           p.defaultFlag,
+          p.typeCode,
           p.id
         ]);
   }
 
-  Future<void> removeProfile(int id) async {
+  Future<void> removeProfileById(int id) async {
     final db = await database;
     await db.rawDelete("delete from gemma_profile where id = ?", [id]);
   }
 
-  /*
-   * [Diagnosis]
-   */
-  Future<int> saveDiagnosticResult(ProfileModel p) async {
+  Future<void> removeAllProfile() async {
     final db = await database;
-    return await db.rawUpdate(
-        "update gemma_profile"
-        "set typeCode = ?"
-        "where id = ?",
-        [p.typeCode, p.id]);
+    await db.rawDelete("delete from gemma_profile");
   }
+
+  // /*
+  //  * [Diagnosis]
+  //  */
+  // Future<int> saveDiagnosticResult(ProfileModel p) async {
+  //   final db = await database;
+  //   return await db.rawUpdate(
+  //       "update gemma_profile"
+  //       "set typeCode = ?"
+  //       "where id = ?",
+  //       [p.typeCode, p.id]);
+  // }
 }
