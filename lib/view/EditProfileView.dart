@@ -7,12 +7,13 @@ import 'package:provider/provider.dart';
 
 // https://github.com/DK15/quiz-app-flutter/blob/master/lib/main.dart
 class EditProfileView extends StatelessWidget {
-  final DbProvider db = DbProvider.dbProviderInstance;
+  final ProfileModel _inputProfile;
+  EditProfileView({inputProfile}) : this._inputProfile = inputProfile;
+
+  final DbProvider _db = DbProvider.dbProviderInstance;
 
   // provider의 영향으로 리빌드되어 static으로 해야하는 것 같음
   static final _formKey = GlobalKey<FormState>();
-  static final _nameCtrl = TextEditingController();
-  static final _ageCtrl = TextEditingController();
 
   String _validateName(v) {
     v = v.trim();
@@ -39,7 +40,12 @@ class EditProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     ProfileModel _profileProvider = Provider.of<ProfileModel>(context);
+    if(_inputProfile!=null){
+      _profileProvider = _inputProfile;
+    } 
+
     return Scaffold(
         body: Container(
       padding: EdgeInsets.all(16.0),
@@ -51,7 +57,7 @@ class EditProfileView extends StatelessWidget {
               TextFormField(
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
-                controller: _nameCtrl,
+                initialValue: _inputProfile != null ? _inputProfile.name : '',
                 validator: _validateName,
                 onSaved: (v) => _profileProvider.name = v,
                 decoration: InputDecoration(
@@ -62,7 +68,7 @@ class EditProfileView extends StatelessWidget {
               TextFormField(
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.done,
-                controller: _ageCtrl,
+                initialValue: _inputProfile != null ? _inputProfile.age : '',
                 validator: _validateAge,
                 onSaved: (v) => _profileProvider.age = v,
                 decoration: InputDecoration(
@@ -84,6 +90,12 @@ class EditProfileView extends StatelessWidget {
                       onChanged: (v) => _profileProvider.sex = v),
                 ],
               ),
+              Checkbox(
+                value: _profileProvider.defaultFlag == 1 ? true : false,
+                onChanged: (v){
+                    _profileProvider.defaultFlag == 1? 0 : 1;
+                } 
+              )
             ],
           ),
         ),
@@ -95,19 +107,26 @@ class EditProfileView extends StatelessWidget {
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
                     _formKey.currentState.save();
-                    ProfileModel p = ProfileModel(
-                        name: _profileProvider.name,
-                        age: _profileProvider.age,
-                        sex: _profileProvider.sex,
-                        defaultFlag: 1);
-                    print('save this profile:${p.toString()}');
-                    db.saveProfile(p).then((v) {
-                      print(v);
-                      db.getDefaultProfile().then((v) => print('get saved profile:${v.toString()}'));
-                    });
-                    // main으로 데이터 넘길것
-                    Navigator.pushReplacementNamed(context, '/main',
-                        arguments: p);
+                    
+                    if (_profileProvider.id != null) {
+                      if(_profileProvider.defaultFlag==1) _db.initializeDefaultFlag();
+
+                      _db.updateProfile(_profileProvider).then((v) {
+                        _db.getProfileById(_profileProvider.id).then((v) =>
+                            print('updated profile:${v.toString()}'));
+                      });
+                    } else {
+                      print('save this profile:${_profileProvider.toString()}');
+                      _db.saveProfile(_profileProvider).then((v) {
+                        _db.getProfileById(_profileProvider.id).then(
+                            (v) => print('saved profile:${v.toString()}'));
+                      });
+                    }
+                    if(_profileProvider.defaultFlag==1){
+                      Navigator.pushReplacementNamed(context, '/main', arguments: _profileProvider);
+                    }else{
+                      Navigator.pushReplacementNamed(context, '/main');
+                    }
                   }
                 }))
       ]),

@@ -18,7 +18,7 @@ void main() async {
   if(count > 0){
     ProfileModel _defaultProfile = await db.getDefaultProfile();
     print('get this profile:${_defaultProfile.toString()}');
-    _defaultHome = MainView(defaultProfile:_defaultProfile);
+    _defaultHome = MainView(inputProfile:_defaultProfile);
   }
   runApp(GemmaApp(_defaultHome));
 } 

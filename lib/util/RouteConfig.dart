@@ -10,7 +10,7 @@ import 'package:gemma/view/UnknownView.dart';
 Route<dynamic> generateRoute(RouteSettings settings){
   switch (settings.name){
     case '/main':
-      return MaterialPageRoute(builder: (BuildContext context) => MainView()); 
+      return MaterialPageRoute(builder: (BuildContext context) => MainView(inputProfile: settings.arguments,)); 
     case'/tutorial': 
       return MaterialPageRoute(builder: (BuildContext context) => TutorialView()); 
     case'/diagnosis/survey': 
@@ -18,7 +18,7 @@ Route<dynamic> generateRoute(RouteSettings settings){
     case'/diagnosis/result': 
       return MaterialPageRoute(builder: (BuildContext context) => DiagnosticResultView()); 
     case'/edit-profile': 
-      return MaterialPageRoute(builder: (BuildContext context) => EditProfileView()); 
+      return MaterialPageRoute(builder: (BuildContext context) => EditProfileView(inputProfile:settings.arguments)); 
     default: UnknownView(); break;
   }
 }

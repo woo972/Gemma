@@ -41,7 +41,6 @@ class DbProvider {
    * [Profile]
    */
   Future<int> saveProfile(ProfileModel p) async {
-    print('save this profile(dbprovider):${p.toString()}');
     final db = await database;
     return await db.rawInsert(
         "insert into gemma_profile"
@@ -112,6 +111,11 @@ class DbProvider {
           p.typeCode,
           p.id
         ]);
+  }
+
+  Future<void> initializeDefaultFlag() async {
+    final db = await database;
+    await db.rawUpdate("update gemma_profile set default_flag=0");
   }
 
   Future<void> removeProfileById(int id) async {

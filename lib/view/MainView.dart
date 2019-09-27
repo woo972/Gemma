@@ -7,12 +7,13 @@ import 'package:gemma/util/Settings.dart';
 import 'package:provider/provider.dart';
 
 class MainView extends StatelessWidget {
-  ProfileModel _defaultProfile;
-  MainView({ProfileModel defaultProfile}): _defaultProfile = defaultProfile;
+  final ProfileModel _inputProfile;
+  MainView({ProfileModel inputProfile}): this._inputProfile = inputProfile;
 
   @override
   Widget build(BuildContext context) {
-    _defaultProfile == null ? Provider.of<ProfileModel>(context) : _defaultProfile;
+    ProfileModel _defaultProfile = Provider.of<ProfileModel>(context);
+    
     return Scaffold(        
         drawer: GemmaDrawer(),
         appBar: GemmaAppBar.getAppBar(),

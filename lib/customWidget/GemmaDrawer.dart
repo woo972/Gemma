@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:gemma/customWidget/ListPopUp.dart';
+import 'package:gemma/customWidget/ListPopUpContent.dart';
 import 'package:gemma/model/ProfileModel.dart';
 import 'package:gemma/util/DbProvider.dart';
 
-class GemmaDrawer extends StatelessWidget {
+class GemmaDrawer extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return GemmaDrawerState();
+  }
+}
+class GemmaDrawerState extends State<GemmaDrawer>{
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -21,48 +29,72 @@ class GemmaDrawer extends StatelessWidget {
               List<ProfileModel> profileList;
               _db.getProfileList().then((rslt) {
                 profileList = rslt;
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      // https://api.flutter.dev/flutter/material/AlertDialog-class.html
-                      return SimpleDialog(
-                        title: Text('프로필 목록'),
-                        children: <Widget>[
-                          SimpleDialogOption(
-                            child: Text('option'),
-                            onPressed: (){},
-                          ),
-                        Container(
-                          /* [Error] RenderViewport does not support returning intrinsic dimensions 
-                               위 에러 workaround로 해결하기 위해 width 부여 */
-                          width: 200,
-                          height: 400,
-                          child: ListView.builder(
-                              itemCount: profileList.length,
-                              itemBuilder: (BuildContext context, int idx) {
-                                return ListTile(
-                                    leading: profileList[idx].defaultFlag==1? Icon(Icons.check_circle) : Icon(Icons.remove_circle_outline),
-                                    title: Text(profileList[idx].name),
-                                    trailing: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        IconButton(
-                                          icon: Icon(Icons.edit),
-                                          onPressed: (){},
-                                        ),
-                                        IconButton(
-                                          icon: Icon(Icons.delete),
-                                          onPressed: (){},
-                                        )
-                                      ],
-                                    ),
-                                    );
-                              }),
+                Navigator.push(
+                    context,
+                    ListPopUp(
+                      top: 30,
+                      left: 60,
+                      right: 60,
+                      bottom: 50,
+                      child: ListPopUpContent(
+                          content: Scaffold(
+                        appBar: AppBar(
+                          title: Text('프로필 관리'),
+                          actions: <Widget>[
+                            IconButton(
+                                icon: Icon(Icons.close),
+                                onPressed: () => Navigator.pop(context))
+                          ],
+                          leading: Container(),
                         ),
-                      ]);
-                    });
+                        body: ListView.builder(
+                            itemCount: profileList.length,
+                            itemBuilder: (BuildContext context, int idx) {
+                              return ListTile(
+                                key: UniqueKey(),
+                                leading: profileList[idx].defaultFlag == 1
+                                    ? Icon(Icons.check_circle)
+                                    : Icon(Icons.remove_circle_outline),
+                                title: Text(profileList[idx].name),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    IconButton(
+                                      icon: Icon(Icons.edit),
+                                      onPressed: () {
+                                        Navigator.pushNamed(context, '/edit-profile', arguments: profileList[idx]);        
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.delete),
+                                      onPressed: () {
+                                        if(profileList[idx].defaultFlag==1){
+                                          showDialog(
+                                            context: context,
+                                            child: SimpleDialog(
+                                              title: Text('알림'),
+                                              children: <Widget>[
+                                                Text('기본 프로필은 삭제할 수 없습니다. 해당 프로필을 삭제하려면 다른 프로필을 기본 프로필로 변경 후 삭제하세요.')
+                                              ],
+                                            )
+                                          );
+                                        }else{
+                                          _db.removeProfileById(profileList[idx].id);
+                                        }
+                                      },
+                                    )
+                                  ],
+                                ),
+                              );
+                            }),
+                        floatingActionButton: FloatingActionButton(
+                            child: Icon(Icons.add),
+                            mini: true,
+                            onPressed: () =>
+                                Navigator.pushNamed(context, '/edit-profile')),
+                      )),
+                    ));
               });
-              // Navigator.pushNamed(context,'/edit-profile');
             },
           ),
           Divider(),
