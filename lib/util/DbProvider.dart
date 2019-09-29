@@ -38,17 +38,21 @@ class DbProvider {
   }
 
   /*
-   * [Profile]
+   * [Profile] insert
    */
-  Future<int> saveProfile(ProfileModel p) async {
+  Future<int> saveProfile(ProfileModel profile) async {
     final db = await database;
+    Map<String,dynamic> p = profile.toMap();
     return await db.rawInsert(
         "insert into gemma_profile"
         "(name, sex, age, default_flag)"
         "values (?,?,?,?)",
-        [p.name, p.sex, p.age, p.defaultFlag]);
+        [p['name'], p['sex'], p['age'], p['default_flag']]);
   }
 
+  /*
+   * [Profile] select
+   */
   Future<int> isProfileExsist() async {
     final db = await database;
     return Sqflite.firstIntValue(
@@ -57,66 +61,50 @@ class DbProvider {
 
   Future<ProfileModel> getDefaultProfile() async {
     final db = await database;
-    var rslt = await db.rawQuery("select id, name, sex, age, type_code, default_flag"
+    List<Map> rslt = await db.rawQuery("select id, name, sex, age, type_code, default_flag"
         " from gemma_profile"
         " where default_flag = 1");
-    return ProfileModel(
-        id: rslt.first['id'],
-        name: rslt.first['name'],        
-        sex: rslt.first['sex'],        
-        age: rslt.first['age'],        
-        defaultFlag: rslt.first['default_flag'],        
-        typeCode: rslt.first['type_code']);
+    return ProfileModel.fromMap(rslt.first);
   }
 
   Future<List<ProfileModel>> getProfileList() async {
     final db = await database;
-    var rslt = await db.rawQuery("select id, name, default_flag"
+    List<Map> rslt = await db.rawQuery("select id, name, age, sex, default_flag, type_code"
         " from gemma_profile"
         " order by default_flag desc, id asc");
     return List.generate(rslt.length, (idx) {
-      return ProfileModel(
-        id: rslt[idx]["id"],
-        name: rslt[idx]["name"],
-        defaultFlag: rslt[idx]["default_flag"]
-      );
+      return ProfileModel.fromMap(rslt[idx]);
     });
   }
 
   Future<ProfileModel> getProfileById(int id) async {
     final db = await database;
-    var rslt =
-        await db.rawQuery("select * from gemma_profile where id=?", [id]);
-    return ProfileModel(
-      id: rslt.first["id"],
-      name: rslt.first["name"],
-      sex: rslt.first["sex"],
-      age: rslt.first["age"],
-      defaultFlag: rslt.first["default_flag"],
-      typeCode: rslt.first["type_code"],
-    );
+    List<Map> rslt = await db.rawQuery("select * from gemma_profile where id=?", [id]);
+    return ProfileModel.fromMap(rslt.first);
   }
 
-  Future<void> updateProfile(ProfileModel p) async {
+  /*
+   * [Profile] update
+   */
+  Future<void> updateProfile(ProfileModel profile) async {
     final db = await database;
+    Map<String,dynamic> p = profile.toMap();
     await db.rawUpdate(
         "update gemma_profile set name=?, sex=?,"
         "age=?, default_flag=?, type_code=?"
         "where id=?",
-        [
-          p.name,
-          p.sex,
-          p.age,
-          p.defaultFlag,
-          p.typeCode,
-          p.id
-        ]);
+        [p['name'], p['sex'], p['age'], p['default_flag'], p['type_code'], p['id']]);
+
   }
 
   Future<void> initializeDefaultFlag() async {
     final db = await database;
     await db.rawUpdate("update gemma_profile set default_flag=0");
   }
+
+  /*
+   * [Profile] delete
+   */
 
   Future<void> removeProfileById(int id) async {
     final db = await database;
@@ -127,16 +115,4 @@ class DbProvider {
     final db = await database;
     await db.rawDelete("delete from gemma_profile");
   }
-
-  // /*
-  //  * [Diagnosis]
-  //  */
-  // Future<int> saveDiagnosticResult(ProfileModel p) async {
-  //   final db = await database;
-  //   return await db.rawUpdate(
-  //       "update gemma_profile"
-  //       "set typeCode = ?"
-  //       "where id = ?",
-  //       [p.typeCode, p.id]);
-  // }
 }

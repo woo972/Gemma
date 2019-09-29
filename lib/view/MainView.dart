@@ -13,7 +13,8 @@ class MainView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ProfileModel _defaultProfile = Provider.of<ProfileModel>(context);
-    
+    if(_inputProfile!=null) _defaultProfile = _inputProfile; 
+
     return Scaffold(        
         drawer: GemmaDrawer(),
         appBar: GemmaAppBar.getAppBar(),
